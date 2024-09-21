@@ -7,7 +7,6 @@ type TComplex = {
   re: number
   im: number
 }
-
 export class Radix2FFT {
   public readonly fftSize: number
 

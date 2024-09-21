@@ -1,3 +1,6 @@
+/**
+ * AudioData is a class which collects raw audio data.
+ */
 export class AudioData {
   public pointsCount: number
   public xData: number[]

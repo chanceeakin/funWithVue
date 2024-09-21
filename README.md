@@ -1,6 +1,6 @@
 # funWithVue
 
-This template should help get you started developing with Vue 3 in Vite.
+This is an in browser spectrograph, built on top of Vue3 + SciChart.
 
 ## Recommended IDE Setup
 
@@ -9,10 +9,6 @@ This template should help get you started developing with Vue 3 in Vite.
 ## Type Support for `.vue` Imports in TS
 
 TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ## Project Setup
 
@@ -43,3 +39,13 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+## Deployment
+
+AWS deployment strategy via Terraform is also included with the repo. These instructions assume knowledge of AWS, TF, and Github. For support, please message me. To deploy:
+
+- Ensure that AWS, Make, & Terraform CLIs are installed and configured. This example uses `us-east-1`.
+- Clone this repo, or keep your AWS instance pointed to this repo's remote URL.
+- Create a new `.env` file in the `tf/` directory from the `.env.sample`. Fill in the required fields.
+- Use the Makefile to run the appropriate commands to `init`, `plan`, and `apply` the infrastructure.
+- Observe: code _should_ be live on your AWS account and will listen to the associated repo for automated branch builds of `main`.

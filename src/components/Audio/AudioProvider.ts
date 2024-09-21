@@ -1,5 +1,8 @@
 import { AudioData } from './AudioData'
 
+/**
+ * AudioDataProvider links to the WebAudioAPI and generates the raw audio data to be processed by SciChart.
+ */
 export class AudioDataProvider {
   private sampleRateProperty: number
   private bufferSizeProperty: number // should be with power of 2 for correct work of FFT

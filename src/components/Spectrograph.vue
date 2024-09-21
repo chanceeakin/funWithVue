@@ -2,8 +2,8 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <div class="graph-container">
-      <div id="sciChart1" />
-      <div id="sciChart2" />
+      <div id="sciChart1" class="small-graph left" />
+      <div id="sciChart2" class="small-graph right" />
       <div id="sciChart3" class="large-graph" />
     </div>
   </div>
@@ -32,8 +32,7 @@ import {
   EVerticalAnchorPoint,
   ECoordinateMode,
   TextAnnotation,
-  Point,
-  SciChartDefaults
+  Point
 } from 'scichart'
 import { AudioDataProvider } from './Audio/AudioProvider'
 import { Radix2FFT } from './Audio/Radix2FFT'
@@ -44,11 +43,10 @@ export const divElementIdChart3 = 'sciChart3'
 
 const AUDIO_STREAM_BUFFER_SIZE = 2048
 
-let cleanupRequested: boolean
-
+/**
+ * drawExample creates the three charts to be displayed
+ */
 export const drawExample = async () => {
-  cleanupRequested = false
-
   const dataProvider = new AudioDataProvider()
 
   const bufferSize = dataProvider.bufferSize
@@ -343,6 +341,7 @@ export const drawExample = async () => {
   return { charts, dataProvider }
 }
 
+// component definition, with lifecycle clean up
 export default defineComponent({
   data() {
     return {
@@ -369,7 +368,6 @@ export default defineComponent({
 })
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -390,6 +388,12 @@ a {
   display: grid;
   gap: 10px;
   justify-items: stretch;
+  grid-template-columns: 4fr;
+}
+
+.small-graph,
+.large-graph {
+  grid-column: 1 / span 1;
 }
 
 @media (min-width: 1024px) {
@@ -400,6 +404,14 @@ a {
   .graph-container {
     grid-template-columns: 2fr 2fr;
     grid-template-rows: 2fr 2fr;
+  }
+
+  .left {
+    grid-column: 1 / span 1;
+  }
+
+  .right {
+    grid-column: 2 / span 1;
   }
   .large-graph {
     grid-column: 1 / span 2;
