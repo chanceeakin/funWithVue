@@ -18,3 +18,8 @@
 - [ ] thorough error handling for user permissions
 - [ ] e2e tests to account for canvas element + jsdom limitations
 - [ ] CI/CD automation (aka terraform updates without my laptop)
+- [ ] change colors from default Vue and SciChart color theme.
+
+## Defects located so far
+
+- [ ] weird refresh bug where `/about` redirects to `/index.html` in prod. probably an s3 + SPA config.
