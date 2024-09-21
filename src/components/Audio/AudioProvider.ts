@@ -4,20 +4,20 @@ export class AudioDataProvider {
   private sampleRateProperty: number
   private bufferSizeProperty: number // should be with power of 2 for correct work of FFT
 
-  private audioContext: AudioContext = null
-  private inputPoint: GainNode = null
-  private streamSource: MediaStreamAudioSourceNode = null
-  private analyserNode: AnalyserNode = null
-  private zeroGain: GainNode = null
+  private audioContext: AudioContext | null = null
+  private inputPoint: GainNode | null = null
+  private streamSource: MediaStreamAudioSourceNode | null = null
+  private analyserNode: AnalyserNode | null = null
+  private zeroGain: GainNode | null = null
 
   private initializedProperty = false
   private isDeletedProperty = false
 
-  private audioData: AudioData
+  private audioData: AudioData | null
 
   private time = 0
 
-  private freqByteData: Uint8Array
+  private freqByteData: Uint8Array | null
 
   public permissionError: boolean
 
@@ -25,6 +25,8 @@ export class AudioDataProvider {
     this.sampleRateProperty = sampleRate
     this.bufferSizeProperty = bufferSizeProperty
     this.audioData = new AudioData(bufferSizeProperty)
+    this.freqByteData = new Uint8Array()
+    this.permissionError = false
   }
 
   public get initialized() {
@@ -55,25 +57,29 @@ export class AudioDataProvider {
         throw Error('AudioContextClass is not defined')
       }
 
-      this.inputPoint = this.audioContext.createGain()
+      if (this.audioContext) {
+        this.inputPoint = this.audioContext.createGain()
 
-      // Create an AudioNode from the stream.
-      this.streamSource = this.audioContext.createMediaStreamSource(stream)
-      this.streamSource.connect(this.inputPoint)
+        // Create an AudioNode from the stream.
+        this.streamSource = this.audioContext.createMediaStreamSource(stream)
+        this.streamSource.connect(this?.inputPoint)
 
-      this.analyserNode = this.audioContext.createAnalyser()
-      this.analyserNode.fftSize = this.bufferSizeProperty * 2
-      this.inputPoint.connect(this.analyserNode)
+        this.analyserNode = this.audioContext.createAnalyser()
+        this.analyserNode.fftSize = this.bufferSizeProperty * 2
+        this.inputPoint.connect(this.analyserNode)
 
-      this.zeroGain = this.audioContext.createGain()
-      this.zeroGain.gain.value = 0.0
-      this.inputPoint.connect(this.zeroGain)
-      this.zeroGain.connect(this.audioContext.destination)
+        this.zeroGain = this.audioContext.createGain()
+        this.zeroGain.gain.value = 0.0
+        this.inputPoint.connect(this.zeroGain)
+        this.zeroGain.connect(this.audioContext.destination)
 
-      this.freqByteData = new Uint8Array(this.analyserNode.frequencyBinCount)
+        this.freqByteData = new Uint8Array(this.analyserNode.frequencyBinCount)
 
-      this.initializedProperty = true
-      return true
+        this.initializedProperty = true
+        return true
+      } else {
+        throw new Error('missing audio context')
+      }
     } catch (error) {
       //@ts-ignore
       if (error.name === 'NotAllowedError') {
@@ -99,6 +105,10 @@ export class AudioDataProvider {
   public next() {
     if (this.initialized === false) {
       throw new Error("Audio isn't initialized!")
+    }
+
+    if (!this.analyserNode || !this.audioData || !this.freqByteData) {
+      throw new Error('Audio API elements missing')
     }
 
     this.analyserNode.getByteTimeDomainData(this.freqByteData)

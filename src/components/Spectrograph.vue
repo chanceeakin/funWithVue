@@ -32,7 +32,8 @@ import {
   EVerticalAnchorPoint,
   ECoordinateMode,
   TextAnnotation,
-  Point
+  Point,
+  SciChartDefaults
 } from 'scichart'
 import { AudioDataProvider } from './Audio/AudioProvider'
 import { Radix2FFT } from './Audio/Radix2FFT'
@@ -350,16 +351,18 @@ export default defineComponent({
   },
   mounted() {
     console.log('Spectrograph.vue onMounted')
+    // @ts-ignore
     this.chartInitializationPromise = drawExample()
   },
   beforeUnmount() {
     console.log('Spectrograph.vue beforeUnmount')
+    // @ts-ignore
     this.chartInitializationPromise.then((sciChart3DSurface) => {
       console.log('..deleting Spectrograph.vue')
       sciChart3DSurface.delete()
     })
   },
-  name: 'Spectrograph',
+  name: 'Spectrograph-Elements',
   props: {
     msg: String
   }
